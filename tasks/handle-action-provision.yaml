@@ -1,4 +1,12 @@
 ---
+- name: Include role to get the sandbox credentials from the pool of sandboxes
+  when: >-
+    vars.anarchy_governor.vars.job_vars.cloud_provider | default('none') == 'ec2'
+    and
+    vars.anarchy_governor.vars.job_vars.__meta__.sandboxed | default(false) == true
+  include_role:
+    name: infra-aws-get-sandbox
+
 - name: Call Ansible Tower job-runner to provision {{ anarchy_subject_name }}
   uri:
     url: https://{{ babylon_tower.hostname }}/api/v2/job_templates/job-runner/launch/
